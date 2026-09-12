@@ -1,0 +1,136 @@
+<html>
+  <head>
+    <title>Auth Website</title>
+  </head>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.20.0/axios.min.js"></script>
+
+  <script>
+    async function signup() {
+      const username = document.getElementById("signup-username").value;
+      const password = document.getElementById("signup-password").value;
+      // console.log(signup);
+      console.log(username);
+      console.log(password);
+
+      await axios.post(
+        "http://localhost:3000/signup",
+        //await axios.post(
+        // "https://potato-pace-registry-painted.trycloudflare.com/signup",
+        {
+          username: username,
+          password: password,
+        },
+      );
+      alert("U Are Signin!");
+    }
+
+    async function signin() {
+      const username = document.getElementById("signin-username").value;
+      const password = document.getElementById("signin-password").value;
+      // console.log(signup);
+      console.log(username);
+      console.log(password);
+
+      const response = await axios.post(
+        "http://localhost:3000/signin",
+        // const response = await axios.post(
+        //   "https://potato-pace-registry-painted.trycloudflare.com/signin",
+        {
+          username: username,
+          password: password,
+        },
+      );
+
+      localStorage.setItem("token", response.data.token);
+
+      alert("U Are Signin!");
+    }
+
+    async function getUserInformation() {
+      const response = await axios.get(
+        "http://localhost:3000/me",
+        // const response = await axios.get(
+        //   "https://potato-pace-registry-painted.trycloudflare.com/me",
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        },
+      );
+      document.getElementById("information").innerHTML =
+        "username:" +
+        response.data.username +
+        " password:" +
+        response.data.password;
+    }
+    // async function getUserInformation() {
+    //   const token = localStorage.getItem("token");
+
+    //   if (!token) {
+    //     return;
+    //   }
+
+    //   const response = await axios.get("http://localhost:3000/me", {
+    //     headers: {
+    //       token: token,
+    //     },
+    //   });
+
+    //   document.getElementById("information").innerHTML =
+    //     "username:" +
+    //     response.data.username +
+    //     " password:" +
+    //     response.data.password;
+    // }
+    getUserInformation();
+
+    function logout() {
+      localStorage.removeItem("token");
+
+      document.getElementById("information").innerHTML = "You are logged out.";
+    }
+  </script>
+
+  <body>
+    <div>
+      signup
+      <input
+        id="signup-username"
+        type="text"
+        name="username"
+        placeholder="username"
+      />
+      <input
+        id="signup-password"
+        type="password"
+        name="password"
+        placeholder="password"
+      />
+      <button onclick="signup()">Submit</button>
+    </div>
+    <div>
+      signin
+      <input
+        id="signin-username"
+        type="text"
+        name="username"
+        placeholder="username"
+      />
+      <input
+        id="signin-password"
+        type="password"
+        name="password"
+        placeholder="password"
+      />
+      <button onclick="signin()">Submit</button>
+    </div>
+    <div>
+      User information:
+      <div id="information"></div>
+    </div>
+    <div>
+      <button onclick="logout()">logout</button>
+    </div>
+  </body>
+</html>
